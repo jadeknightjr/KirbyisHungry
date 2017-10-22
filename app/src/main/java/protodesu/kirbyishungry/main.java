@@ -1,14 +1,18 @@
 package protodesu.kirbyishungry;
 
+import android.graphics.Point;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,11 +29,13 @@ public class main extends AppCompatActivity {
     //Size
     private int frameHeight;
     private int kirbySize;
+    private int screenWidth;
+    private int screenHeight;
 
     ///position
     private int kirbyY;
-    private int cookiesX;
-    private int cookiesY;
+    private int cookieX;
+    private int cookieY;
     private int cakeX;
     private int cakeY;
     private int pizzaX;
@@ -58,6 +64,16 @@ public class main extends AppCompatActivity {
         pizza = (ImageView) findViewById(R.id.pizza);
         bomb = (ImageView) findViewById(R.id.bomb);
 
+        //Get screen size
+        WindowManager wm = getWindowManager();
+        Display disp = wm.getDefaultDisplay();
+        Point size = new Point();
+        disp.getSize(size);
+
+        screenWidth = size.x;
+        screenHeight = size.y;
+
+
         //Move to out of screen
         cookie.setX(-80);
         cookie.setY(-80);
@@ -68,13 +84,47 @@ public class main extends AppCompatActivity {
         bomb.setX(-80);
         bomb.setY(-80);
 
-        //will remove later...TEMPORARY
-        kirbyY = 500;
-
 
     }
 
     public void changePos() {
+
+        //cookie
+        cookieX -=12;
+        if(cookieX <0){
+            cookieX = screenWidth + 10;
+            cookieY = (int) Math.floor(Math.random() * (frameHeight-cookie.getHeight()));
+        }
+        cookie.setX(cookieX);
+        cookie.setY(cookieY);
+
+        //cake
+        cakeX -=16;
+        if(cakeX<0){
+            cakeX = screenWidth + 20;
+            cakeY = (int) Math.floor(Math.random() * (frameHeight-cake.getHeight()));
+        }
+        cake.setX(cakeX);
+        cake.setY(cakeY);
+
+        //pizza
+        pizzaX -= 20;
+        if(pizzaX<0){
+            pizzaX = screenHeight + 60;
+            pizzaY = (int) Math.floor(Math.random() * (frameHeight-pizza.getHeight()));
+        }
+        pizza.setX(pizzaX);
+        pizza.setY(pizzaY);
+
+        //bomb
+        bombX -=25;
+        if(bombX<0){
+            bombX = screenWidth + 20;
+            bombY = (int) Math.floor(Math.random() * (frameHeight-bomb.getHeight()));
+        }
+        bomb.setX(bombX);
+        bomb.setY(bombY);
+
 
         //move kirby
         if(action_flg == true){
