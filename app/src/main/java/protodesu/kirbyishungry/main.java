@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,10 @@ public class main extends AppCompatActivity {
     private ImageView cake;
     private ImageView pizza;
     private ImageView bomb;
+
+    //Size
+    private int frameHeight;
+    private int kirbySize;
 
     ///position
     private int kirbyY;
@@ -38,7 +43,7 @@ public class main extends AppCompatActivity {
 
     //Status Check
     private boolean action_flg = false;
-
+    private boolean start_flg = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +69,74 @@ public class main extends AppCompatActivity {
         bomb.setY(-80);
 
         //will remove later...TEMPORARY
-        startLabel.setVisibility(View.INVISIBLE);
         kirbyY = 500;
+
 
     }
 
+    public void changePos() {
+
+        //move kirby
+        if(action_flg == true){
+            //touch
+            kirbyY -=20;
+        }else{
+            //no touch
+            kirbyY+=20;
+        }
+
+        //Check box position
+        //don't go to space!!!
+        if(kirbyY <0) kirbyY = 0;
+
+        //don't fall off bottom
+        if(kirbyY>frameHeight - kirbySize) kirbyY = frameHeight-kirbySize;
+
+        kirby.setY(kirbyY);
+    }
+
+
     public boolean onTouchEvent(MotionEvent me) {
 
-        if (me.getAction() == MotionEvent.ACTION_DOWN) {
-            kirbyY -= 20;
+        if(start_flg == false){
+
+            start_flg = true;
+
+            //WHy get frame height and box height here???
+            //because the UI has not been set on the screen in OnCreate() !!!
+
+            FrameLayout frame = (FrameLayout)  findViewById(R.id.frame);
+            frameHeight = frame.getHeight();
+
+            kirbyY = (int)kirby.getY();
+
+            //THis si fine, since kirby is a square(height and width are the same)
+            kirbySize = kirby.getHeight();
+
+
+
+
+            startLabel.setVisibility(View.GONE);
+
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            changePos();
+                        }
+                    });
+                }
+            },0,20);
+
+        }else{
+            if (me.getAction() == MotionEvent.ACTION_DOWN) {
+                action_flg = true;
+            }else if (me.getAction() == MotionEvent.ACTION_UP){
+                action_flg = false;
+            }
         }
-        kirby.setY(kirbyY);
         return true;
     }
 }
