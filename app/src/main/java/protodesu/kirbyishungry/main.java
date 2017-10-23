@@ -43,6 +43,8 @@ public class main extends AppCompatActivity {
     private int bombX;
     private int bombY;
 
+    //score
+    private int score = 0;
     //Initialize Class
     private Handler handler = new Handler();
     private Timer timer = new Timer();
@@ -84,10 +86,15 @@ public class main extends AppCompatActivity {
         bomb.setX(-80);
         bomb.setY(-80);
 
+        //will change from code at bottom
+        scoreLabel.setText("Score : 0");
 
     }
 
     public void changePos() {
+
+        //check hits first
+        hitCheck();
 
         //cookie
         cookieX -=12;
@@ -107,10 +114,11 @@ public class main extends AppCompatActivity {
         cake.setX(cakeX);
         cake.setY(cakeY);
 
+
         //pizza
         pizzaX -= 20;
-        if(pizzaX<0){
-            pizzaX = screenHeight + 60;
+        if(pizzaX <0){
+            pizzaX= screenWidth+ 5000;
             pizzaY = (int) Math.floor(Math.random() * (frameHeight-pizza.getHeight()));
         }
         pizza.setX(pizzaX);
@@ -143,6 +151,65 @@ public class main extends AppCompatActivity {
         if(kirbyY>frameHeight - kirbySize) kirbyY = frameHeight-kirbySize;
 
         kirby.setY(kirbyY);
+
+        scoreLabel.setText("Score : "+ score);
+
+    }
+
+    public void hitCheck(){
+        //if center of the food/bomb is in kirby, it countas as a hit
+
+        //cookie
+        int cookieCenterX = cookieX + cookie.getWidth()/2;
+        int cookieCenterY = cookieY + cookie.getHeight()/2;
+
+        //0 <= cookieCenterX <= kirbyWidth
+        //kirbyY <= cookieCenterY <= kirbyY + cookieHeight
+        if(0 <= cookieCenterX && cookieCenterX <= kirbySize &&
+                kirbyY <= cookieCenterY && cookieCenterY <= kirbyY + kirbySize){
+
+            //weakest score cookie
+            score +=5;
+            cookieX = -10;
+        }
+
+        //cake
+        int cakeCenterX = cakeX + cake.getWidth()/2;
+        int cakeCenterY = cakeY + cake.getHeight()/2;
+
+        if(0 <= cakeCenterX && cakeCenterX <= kirbySize &&
+                kirbyY <= cakeCenterY && cakeCenterY <= kirbyY + kirbySize){
+
+            //meh avg.
+            score +=15;
+            cakeX = -10;
+        }
+
+        //pizza
+        int pizzaCenterX = pizzaX + pizza.getWidth()/2;
+        int pizzaCenterY = pizzaY + pizza.getHeight()/2;
+        if(0 <= pizzaCenterX && pizzaCenterX <= kirbySize &&
+                kirbyY <= pizzaCenterY && pizzaCenterY <= kirbyY + kirbySize) {
+
+            score += 30;
+            pizzaX = -10;   //remember when copy past own code... CHANGE cookieX INTO pizzaX !!!
+        }
+
+        //bomb
+        int bombCenterX = bombX + bomb.getWidth()/2;
+        int bombCenterY = bombY + bomb.getHeight()/2;
+
+        if(0 <= bombX && bombCenterX <= kirbySize &&
+                kirbyY <= bombCenterY && bombCenterY <= kirbyY + kirbySize){
+
+            //stop timer...
+            timer.cancel();
+            timer = null;
+
+            //show result...
+        }
+
+
     }
 
 
