@@ -1,5 +1,6 @@
 package protodesu.kirbyishungry;
 
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -206,7 +207,12 @@ public class main extends AppCompatActivity {
             timer.cancel();
             timer = null;
 
-            //show result...
+            //show result... ty youtube...
+            Intent intent = new Intent(getApplicationContext(), result.class);
+            intent.putExtra("SCORE", score);
+            startActivity(intent);
+
+
         }
 
 
